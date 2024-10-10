@@ -5,11 +5,9 @@ import cu.javidev.seguridadjwt.dtos.AuthLoginResponse;
 import cu.javidev.seguridadjwt.dtos.RegisterRequest;
 import cu.javidev.seguridadjwt.dtos.RegisterResponse;
 import cu.javidev.seguridadjwt.service.IAuthService;
-import cu.javidev.seguridadjwt.utils.JwtUtils;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
