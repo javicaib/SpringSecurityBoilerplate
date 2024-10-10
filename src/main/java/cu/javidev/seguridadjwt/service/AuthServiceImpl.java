@@ -11,6 +11,8 @@ import cu.javidev.seguridadjwt.persistence.respositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 
 @Service
 @RequiredArgsConstructor
@@ -34,7 +36,16 @@ public class AuthServiceImpl implements IAuthService {
 
     @Override
     public AuthLoginResponse login(AuthLoginRequest authLoginRequest) {
+        Optional<UserEntity> user = userRepository.findByUsername(authLoginRequest.username());
 
-        return null;
+        if (user.isEmpty()) {
+            throw new RuntimeException("Invalid username or password");
+        }
+
+        if (!user.get().getPassword().equals(authLoginRequest.password())) {
+            throw new RuntimeException("Invalid username or password");
+        }
+
+        return new AuthLoginResponse(String.format("User: %s login", user.get().getUsername()));
     }
 }
