@@ -1,5 +1,7 @@
 package cu.javidev.seguridadjwt.service;
 
+import cu.javidev.seguridadjwt.dtos.AuthLoginRequest;
+import cu.javidev.seguridadjwt.dtos.AuthLoginResponse;
 import cu.javidev.seguridadjwt.dtos.RegisterRequest;
 import cu.javidev.seguridadjwt.dtos.RegisterResponse;
 import cu.javidev.seguridadjwt.persistence.entities.RoleEntity;
@@ -7,10 +9,10 @@ import cu.javidev.seguridadjwt.persistence.entities.RoleEnum;
 import cu.javidev.seguridadjwt.persistence.entities.UserEntity;
 import cu.javidev.seguridadjwt.persistence.respositories.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
-import java.util.Set;
 
+@Service
 @RequiredArgsConstructor
 public class AuthServiceImpl implements IAuthService {
     final UserRepository userRepository;
@@ -28,5 +30,11 @@ public class AuthServiceImpl implements IAuthService {
                 .build();
         userRepository.save(user);
         return new RegisterResponse(String.format("User: %s create", user.getUsername()));
+    }
+
+    @Override
+    public AuthLoginResponse login(AuthLoginRequest authLoginRequest) {
+
+        return null;
     }
 }
