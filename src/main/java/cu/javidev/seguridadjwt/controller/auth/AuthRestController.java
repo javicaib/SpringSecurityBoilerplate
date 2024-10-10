@@ -1,5 +1,7 @@
 package cu.javidev.seguridadjwt.controller.auth;
 
+import cu.javidev.seguridadjwt.dtos.AuthLoginRequest;
+import cu.javidev.seguridadjwt.dtos.AuthLoginResponse;
 import cu.javidev.seguridadjwt.dtos.RegisterRequest;
 import cu.javidev.seguridadjwt.dtos.RegisterResponse;
 import cu.javidev.seguridadjwt.service.IAuthService;
@@ -18,9 +20,14 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthRestController {
     final IAuthService authService;
 
-    @PostMapping("/api/v1")
+    @PostMapping("/api/v1/register")
     public RegisterResponse register(@RequestBody @Valid RegisterRequest registerRequest) {
 
         return authService.register(registerRequest);
+    }
+
+    @PostMapping("/api/v1/login")
+    public AuthLoginResponse login(@RequestBody @Valid AuthLoginRequest authLoginRequest) {
+        return authService.login(authLoginRequest);
     }
 }

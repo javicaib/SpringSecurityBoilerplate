@@ -4,8 +4,6 @@ import cu.javidev.seguridadjwt.dtos.AuthLoginRequest;
 import cu.javidev.seguridadjwt.dtos.AuthLoginResponse;
 import cu.javidev.seguridadjwt.dtos.RegisterRequest;
 import cu.javidev.seguridadjwt.dtos.RegisterResponse;
-import cu.javidev.seguridadjwt.persistence.entities.RoleEntity;
-import cu.javidev.seguridadjwt.persistence.entities.RoleEnum;
 import cu.javidev.seguridadjwt.persistence.entities.UserEntity;
 import cu.javidev.seguridadjwt.persistence.respositories.UserRepository;
 import lombok.RequiredArgsConstructor;
