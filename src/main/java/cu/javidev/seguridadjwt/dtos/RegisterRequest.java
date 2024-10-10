@@ -24,7 +24,7 @@ public record RegisterRequest(
         String password_confirm
 
 ) {
-    public Boolean passwordsMatch(){
-        return password.equals(password_confirm);
+    public RegisterRequest{
+        if (!password.equals(password_confirm)) throw new RuntimeException("Las contraseñas no coinciden");
     }
 }
