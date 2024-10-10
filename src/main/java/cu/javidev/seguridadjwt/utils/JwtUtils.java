@@ -7,6 +7,8 @@ import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.auth0.jwt.interfaces.JWTVerifier;
 import com.auth0.jwt.interfaces.RSAKeyProvider;
+import cu.javidev.seguridadjwt.exceptions.PrivateKeyLoadException;
+import cu.javidev.seguridadjwt.exceptions.PublicKeyLoadException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.security.core.Authentication;
@@ -40,7 +42,7 @@ public class JwtUtils implements IJwtUtils {
 
 
     @Override
-    public String generateToken(Authentication authentication) throws Exception {
+    public String generateToken(Authentication authentication)  {
 
         // Cargar la clave privada
         RSAPrivateKey pk = loadPrivateKey(privateKey);
@@ -72,7 +74,7 @@ public class JwtUtils implements IJwtUtils {
     }
 
     @Override
-    public DecodedJWT validateToken(String token) throws Exception {
+    public DecodedJWT validateToken(String token) {
         try {
             RSAPrivateKey pk = loadPrivateKey(privateKey);
             RSAPublicKey pub = loadPublicKey(publicKey);
@@ -102,36 +104,42 @@ public class JwtUtils implements IJwtUtils {
         return token.getClaims();
     }
 
+    private RSAPrivateKey loadPrivateKey(Resource resource){
 
-    private RSAPrivateKey loadPrivateKey(Resource resource) throws Exception {
+        try {
+            byte[] keyBytes = getResource(resource);
 
-        byte[] keyBytes = getResource(resource);
+            String privateKeyPEM = new String(keyBytes, StandardCharsets.UTF_8)
+                    .replace("-----BEGIN PRIVATE KEY-----", "")
+                    .replace("-----END PRIVATE KEY-----", "")
+                    .replaceAll("\\s", "");
 
-        String privateKeyPEM = new String(keyBytes, StandardCharsets.UTF_8)
-                .replace("-----BEGIN PRIVATE KEY-----", "")
-                .replace("-----END PRIVATE KEY-----", "")
-                .replaceAll("\\s", "");
+            byte[] encoded = Base64.getDecoder().decode(privateKeyPEM);
 
-        byte[] encoded = Base64.getDecoder().decode(privateKeyPEM);
-
-        KeyFactory keyFactory = KeyFactory.getInstance("RSA");
-        return (RSAPrivateKey) keyFactory.generatePrivate(new PKCS8EncodedKeySpec(encoded));
+            KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+            return (RSAPrivateKey) keyFactory.generatePrivate(new PKCS8EncodedKeySpec(encoded));
+        } catch (Exception e) {
+            throw new PrivateKeyLoadException("Failed to load private key", e);
+        }
     }
 
+    private RSAPublicKey loadPublicKey(Resource resource){
+        try {
+            byte[] keyBytes = getResource(resource);
 
-    private RSAPublicKey loadPublicKey(Resource resource) throws Exception {
-        byte[] keyBytes = getResource(resource);
+            String publicKeyPEM = new String(keyBytes, StandardCharsets.UTF_8)
+                    .replace("-----BEGIN PUBLIC KEY-----", "")
+                    .replace("-----END PUBLIC KEY-----", "")
+                    .replaceAll("\\s", "");
 
-        String publicKeyPEM = new String(keyBytes, StandardCharsets.UTF_8)
-                .replace("-----BEGIN PUBLIC KEY-----", "")
-                .replace("-----END PUBLIC KEY-----", "")
-                .replaceAll("\\s", "");
+            byte[] encoded = Base64.getDecoder().decode(publicKeyPEM);
 
-        byte[] encoded = Base64.getDecoder().decode(publicKeyPEM);
+            KeyFactory keyFactory = KeyFactory.getInstance("RSA");
 
-        KeyFactory keyFactory = KeyFactory.getInstance("RSA");
-
-        return (RSAPublicKey) keyFactory.generatePublic(new X509EncodedKeySpec(encoded));
+            return (RSAPublicKey) keyFactory.generatePublic(new X509EncodedKeySpec(encoded));
+        } catch (Exception e) {
+            throw new PublicKeyLoadException("Failed to load public key", e);
+        }
     }
 
     private byte[] getResource(Resource resource) throws Exception {

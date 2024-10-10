@@ -9,10 +9,9 @@ import cu.javidev.seguridadjwt.utils.JwtUtils;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/auth")
@@ -20,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class AuthRestController {
     final IAuthService authService;
+    final PasswordEncoder passwordEncoder;
 
     @PostMapping("/api/v1/register")
     public RegisterResponse register(@RequestBody @Valid RegisterRequest registerRequest) {
@@ -28,7 +28,12 @@ public class AuthRestController {
     }
 
     @PostMapping("/api/v1/login")
-    public AuthLoginResponse login(@RequestBody @Valid AuthLoginRequest authLoginRequest) {
+    public AuthLoginResponse login(@RequestBody @Valid AuthLoginRequest authLoginRequest){
         return authService.login(authLoginRequest);
+    }
+
+    @GetMapping("/api/v1/getPassword")
+    public String getPassword(){
+        return passwordEncoder.encode("123456");
     }
 }
