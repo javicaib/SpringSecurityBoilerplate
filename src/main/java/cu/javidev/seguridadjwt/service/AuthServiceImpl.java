@@ -10,7 +10,7 @@ import cu.javidev.seguridadjwt.persistence.entities.RoleEnum;
 import cu.javidev.seguridadjwt.persistence.entities.UserEntity;
 import cu.javidev.seguridadjwt.persistence.respositories.RoleRepository;
 import cu.javidev.seguridadjwt.persistence.respositories.UserRepository;
-import cu.javidev.seguridadjwt.utils.JwtUtils;
+import cu.javidev.seguridadjwt.utils.jwt.JwtUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -116,11 +116,10 @@ public class AuthServiceImpl implements IAuthService, UserDetailsService {
         if (user == null) {
             throw new BadCredentialsException("Invalid username or password");
         }
-
         if (!passwordEncoder.matches(password, user.getPassword())) {
             throw new BadCredentialsException("Invalid username or password");
         }
-        return new UsernamePasswordAuthenticationToken(username, password, user.getAuthorities());
+        return new UsernamePasswordAuthenticationToken(username, user.getPassword(), user.getAuthorities());
     }
 
 

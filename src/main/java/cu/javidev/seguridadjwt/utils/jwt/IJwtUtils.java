@@ -1,4 +1,4 @@
-package cu.javidev.seguridadjwt.utils;
+package cu.javidev.seguridadjwt.utils.jwt;
 
 
 import com.auth0.jwt.interfaces.Claim;
